@@ -595,6 +595,7 @@ tabs:
             - 11        # Status
             #- 12       # Labels
             #- 13       # Search data
+            - 14        # 3PAR Provisioning
         actions:
             Datastore.refresh: true
             Datastore.create_dialog: true
