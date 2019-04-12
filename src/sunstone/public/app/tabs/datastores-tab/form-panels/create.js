@@ -181,6 +181,11 @@ define(function(require) {
           $('input#file_ds_type', dialog).attr('disabled', 'disabled');
           _selectCeph(dialog);
           break;
+          
+        case "3par":
+          $('input#file_ds_type', dialog).attr('disabled', 'disabled');
+          _select3par(dialog);
+          break;
         
         case "vcenter":
           $('input#file_ds_type', dialog).attr('disabled', 'disabled');
@@ -221,6 +226,14 @@ define(function(require) {
     });
 
     $('#presets', dialog).change();
+    
+    $('#par_qos_enable', dialog).click(function() {
+      if($(this).is(":checked")) {
+        $('div#par_qos_params', dialog).fadeIn();
+      } else {
+        $('div#par_qos_params', dialog).fadeOut();
+      }
+    });
   }
 
 
@@ -259,6 +272,18 @@ define(function(require) {
     var iscsi_usage     = $('#iscsi_usage', dialog).val();
     var vcenter_cluster = $('#vcenter_cluster', dialog).val();
     var compatible_sys_ds = $('#compatible_sys_ds', dialog).val();
+    
+    // 3par
+    var par_cpg = $('#par_cpg', dialog).val();
+    var par_provisioning = $('#par_provisioning', dialog).val();
+    var par_naming_type = $('#par_naming_type', dialog).val();
+    var par_qos_enable = $('#par_qos_enable', dialog).is(':checked');
+    var par_qos_priority = $('#par_qos_priority', dialog).val();
+    var par_qos_max_iops = $('#par_qos_max_iops', dialog).val();
+    var par_qos_min_iops = $('#par_qos_min_iops', dialog).val();
+    var par_qos_max_bw = $('#par_qos_max_bw', dialog).val();
+    var par_qos_min_bw = $('#par_qos_min_bw', dialog).val();
+    var par_qos_latency = $('#par_qos_latency', dialog).val();
 
     var ds_obj = {
       "datastore" : {
@@ -347,6 +372,62 @@ define(function(require) {
     if (compatible_sys_ds)
         ds_obj.datastore.compatible_sys_ds = compatible_sys_ds;
 
+    // 3par
+    if (par_cpg)
+        ds_obj.datastore.cpg = par_cpg;
+
+    if (tm_mad === '3par') {
+      ds_obj.datastore.dedup = 'NO';
+      ds_obj.datastore.compression = 'NO';
+
+      switch (par_provisioning) {
+        case 'full':
+          ds_obj.datastore.thin = 'NO';
+          break;
+        case 'thin':
+          ds_obj.datastore.thin = 'YES';
+          break;
+        case 'dedup':
+          ds_obj.datastore.thin = 'YES';
+          ds_obj.datastore.dedup = 'YES';
+          break;
+        case 'compr':
+          ds_obj.datastore.thin = 'YES';
+          ds_obj.datastore.compression = 'YES';
+          break;
+        case 'compr-dedup':
+          ds_obj.datastore.thin = 'YES';
+          ds_obj.datastore.compression = 'YES';
+          ds_obj.datastore.dedup = 'YES';
+          break;
+      }
+    }
+    
+    if (par_naming_type)
+        ds_obj.datastore.naming_type = par_naming_type;
+        
+    if(par_qos_enable === 'YES') {
+      ds_obj.datastore.qos_enable = par_qos_enable;
+      
+      if (par_qos_priority)
+          ds_obj.datastore.qos_priority = par_qos_priority;
+      
+      if (par_qos_max_iops)
+          ds_obj.datastore.qos_max_iops = par_qos_max_iops;
+      
+      if (par_qos_min_iops)
+          ds_obj.datastore.qos_min_iops = par_qos_min_iops;
+      
+      if (par_qos_max_bw)
+          ds_obj.datastore.qos_max_bw = par_qos_max_bw;
+      
+      if (par_qos_min_bw)
+          ds_obj.datastore.qos_min_bw = par_qos_min_bw;
+      
+      if (par_qos_latency)
+          ds_obj.datastore.qos_latency = par_qos_latency;
+    }
+
     Sunstone.runAction("Datastore.create", ds_obj);
     return false;
   }
@@ -396,6 +477,13 @@ define(function(require) {
     $('label[for="limit_transfer_bw"],input#limit_transfer_bw', dialog).parent().hide();
     $('label[for="no_decompress"],input#no_decompress', dialog).parent().hide();
 
+    // 3par
+    $('label[for="par_cpg"],input#par_cpg', dialog).parent().hide();
+    $('label[for="par_provisioning"],input#par_provisioning', dialog).parent().hide();
+    $('label[for="par_naming_type"],input#par_naming_type', dialog).parent().hide();
+    $('label[for="par_qos_enable"],input#par_qos_enable', dialog).parent().hide();
+    $('div#par_qos_params', dialog).hide();
+
     $('input[name="ds_tab_custom_ds_mad"]', dialog).parent().hide();
     $('input[name="ds_tab_custom_tm_mad"]', dialog).parent().hide();
 
@@ -424,6 +512,12 @@ define(function(require) {
     $('label[for="vcenter_cluster"],input#vcenter_cluster', dialog).parent().show();
     $('label[for="limit_transfer_bw"],input#limit_transfer_bw', dialog).parent().show();
     $('label[for="no_decompress"],input#no_decompress', dialog).parent().show();
+
+    // 3par
+    $('label[for="par_cpg"],input#par_cpg', dialog).parent().show();
+    $('label[for="par_provisioning"],input#par_provisioning', dialog).parent().show();
+    $('label[for="par_naming_type"],input#par_naming_type', dialog).parent().show();
+    $('label[for="par_qos_enable"],input#par_qos_enable', dialog).parent().show();
 
     $('input[name="ds_tab_custom_ds_mad"]', dialog).parent().show();
     $('input[name="ds_tab_custom_tm_mad"]', dialog).parent().show();
@@ -474,6 +568,22 @@ define(function(require) {
     $('label[for="no_decompress"],input#no_decompress', dialog).parent().fadeIn();
     $('label[for="datastore_capacity_check"],input#datastore_capacity_check', dialog).parent().fadeIn();
     $('select#disk_type', dialog).val('RBD');
+    $('input#safe_dirs', dialog).removeAttr('disabled');
+    $('input#limit_mb', dialog).removeAttr('disabled');
+    $('input#restricted_dirs', dialog).removeAttr('disabled');
+  }
+  
+  function _select3par(dialog) {
+    $('label[for="bridge_list"],input#bridge_list', dialog).parent().fadeIn();
+    $('label[for="par_cpg"],input#par_cpg', dialog).parent().fadeIn();
+    $('label[for="par_provisioning"],input#par_provisioning', dialog).parent().fadeIn();
+    $('label[for="par_naming_type"],input#par_naming_type', dialog).parent().fadeIn();
+    $('label[for="par_qos_enable"],input#par_qos_enable', dialog).parent().fadeIn();
+    $('label[for="limit_transfer_bw"],input#limit_transfer_bw', dialog).parent().fadeIn();
+    $('label[for="no_decompress"],input#no_decompress', dialog).parent().fadeIn();
+    $('label[for="staging_dir"],input#staging_dir', dialog).parent().fadeIn();
+    $('label[for="datastore_capacity_check"],input#datastore_capacity_check', dialog).parent().fadeIn();
+    $('select#disk_type', dialog).val('block');
     $('input#safe_dirs', dialog).removeAttr('disabled');
     $('input#limit_mb', dialog).removeAttr('disabled');
     $('input#restricted_dirs', dialog).removeAttr('disabled');

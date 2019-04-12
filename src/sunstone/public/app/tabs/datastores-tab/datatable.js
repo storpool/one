@@ -92,7 +92,8 @@ define(function(require) {
       Locale.tr("Type"),
       Locale.tr("Status"),
       Locale.tr("Labels"),
-      "search_data"
+      "search_data",  
+      Locale.tr("Provisioning")
     ]
 
     this.selectOptions = {
@@ -153,6 +154,20 @@ define(function(require) {
       DS_MAD: element.DS_MAD
     }
 
+    var par_provisioning = '-';
+
+    if(element[TEMPLATE_ATTR].DEDUP === 'YES' && element[TEMPLATE_ATTR].COMPRESSION === 'YES') {
+      par_provisioning = 'Deduplicated Compressed';
+    } else if(element[TEMPLATE_ATTR].DEDUP === 'YES') {
+      par_provisioning = 'Deduplicated';
+    } else if(element[TEMPLATE_ATTR].COMPRESSION === 'YES') {
+      par_provisioning = 'Compressed';
+    } else if(element[TEMPLATE_ATTR].THIN === 'YES') {
+      par_provisioning = 'Thin';
+    } else if(element[TEMPLATE_ATTR].THIN === 'NO') {
+      par_provisioning = 'Full';
+    }
+
     var color_html = Status.state_lock_to_color("DATASTORE",state, element_json[XML_ROOT]["LOCK"]);
 
     return [
@@ -172,7 +187,8 @@ define(function(require) {
         OpenNebulaDatastore.typeStr(element.TYPE),
         state,
         (LabelsUtils.labelsStr(element[TEMPLATE_ATTR])||''),
-        btoa(unescape(encodeURIComponent(JSON.stringify(search))))
+        btoa(unescape(encodeURIComponent(JSON.stringify(search)))),
+        par_provisioning
     ];
   }
 

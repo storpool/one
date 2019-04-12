@@ -25,6 +25,7 @@
     <div class="medium-6 columns">
       <label for="presets">{{tr "Storage backend"}}</label>
       <select id="presets" name="presets">
+        <option ds="3par" tm="3par" value="3par">{{tr "3PAR"}}</option>
         <option ds="fs" tm="shared" value="fs_shared">{{tr "Filesystem - shared mode"}}</option>
         <option ds="fs" tm="ssh"    value="fs_ssh">{{tr "Filesystem - ssh mode"}}</option>
         <option ds="fs" tm="qcow2"  value="fs_qcow2">{{tr "Filesystem - qcow2 mode"}}</option>
@@ -48,6 +49,7 @@
         <div class="medium-6 columns">
           <label for="ds_mad">{{tr "Datastore"}}</label>
           <select id="ds_mad" name="ds_mad">
+            <option value="3par">{{tr "3PAR"}}</option>
             <option value="fs">{{tr "Filesystem"}}</option>
             <option value="ceph">{{tr "Ceph"}}</option>
             <option value="dev">{{tr "Devices"}}</option>
@@ -63,6 +65,7 @@
         <div class="medium-6 columns">
           <label for="tm_mad">{{tr "Transfer"}}</label>
           <select id="tm_mad" name="tm_mad">
+            <option value="3par">{{tr "3PAR"}}</option>
             <option value="shared">{{tr "Shared"}}</option>
             <option value="ssh">{{tr "SSH"}}</option>
             <option value="qcow2">{{tr "qcow2"}}</option>
@@ -208,6 +211,105 @@
       </label>
       <input type="text" name="ceph_secret" id="ceph_secret" />
     </div>
+    
+    <div class="medium-6 columns">
+      <label for="par_cpg">
+        {{tr "3PAR CPG to store Images"}}
+      </label>
+      <input type="text" name="par_cpg" id="par_cpg" />
+    </div>
+    <div class="medium-6 columns">
+      <label for="par_naming_type">
+        {{tr "3PAR Naming"}}
+        <span class="tip">
+          {{tr "Volume names are created according to best practices naming conventions. <TYPE> part - can be prd for production servers, dev for development servers, tst for test servers or clustername... Volume name will be <TYPE>.one.<IMAGE_ID>.vv for ex. dev.one.1.vv or tst.one.3.vv"}}
+        </span>
+      </label>
+      <input type="text" name="par_naming_type" id="par_naming_type" placeholder="clustername"/>
+    </div>
+    
+    <div class="medium-12 columns">
+      <label for="par_provisioning">
+        {{tr "3PAR Provisioning type"}}
+      </label>
+      <select id="par_provisioning" name="par_provisioning">
+        <option value="thin">{{tr "Thin Provisioning"}}</option>
+        <option value="dedup">{{tr "Thin Deduplicated Provisioning"}}</option>
+        <option value="compr">{{tr "Thin Compressed Provisioning"}}</option>
+        <option value="compr-dedup">{{tr "Thin Compressed Deduplicated Provisioning"}}</option>
+        <option value="full">{{tr "Full Provisioning"}}</option>
+      </select>
+    </div>
+    <div class="medium-12 columns">
+      <input id="par_qos_enable" type="checkbox" name="par_qos_enable" value="YES" />
+      <label for="par_qos_enable">
+        {{tr "3PAR Use QoS"}}
+        <span class="tip">
+          {{tr "Applied per VM, so if VM have multiple disks, them QoS policy applies to all VM disks minimum goals and maximum limits are shared. Persistent disks use QoS Rules attributes from IMAGE datastore. Non-Persistent disks use QoS Rules attributes from target SYSTEM datastore"}}
+        </span>
+      </label>
+    </div>
+    <div id="par_qos_params">
+      <div class="medium-6 columns">
+        <label for="par_qos_max_iops">
+          {{tr "QoS Max IOPS"}}
+          <span class="tip">
+            {{tr "The maximum IOPS permitted for the virtual volumes associated with the policy. The IOPS maximum limit must be between 0 and 2 147 483 647 IO/s."}}
+          </span>
+        </label>
+        <input type="text" name="par_qos_max_iops" id="par_qos_max_iops" />
+      </div>
+      <div class="medium-6 columns">
+        <label for="par_qos_min_iops">
+          {{tr "QoS Min IOPS"}}
+          <span class="tip">
+            {{tr "If IOPS fall below this minimum goal, then IOPS will not be throttled (reduced) for the virtual volumes associated with the policy. If a minimum goal is set for IOPS, then a maximum limit must also be set for IOPS. The minimum goal will be ignored if the system does not have policies with a latency goal set. The IOPS minimum goal must be between 0 and 2 147 483 647 IO/s."}}
+          </span>
+        </label>
+        <input type="text" name="par_qos_min_iops" id="par_qos_min_iops" />
+      </div>
+      <div class="medium-6 columns">
+        <label for="par_qos_max_bw">
+          {{tr "QoS Max Bandwidth in kB/s"}}
+          <span class="tip">
+            {{tr "The maximum bandwidth permitted for the virtual volumes associated with the policy. The maximum limit does not have dependencies on the other optimization settings. The bandwidth maximum limit must be between 0 and 9 007 199 254 740 991 KB/s."}}
+          </span>
+        </label>
+        <input type="text" name="par_qos_max_bw" id="par_qos_max_bw" />
+      </div>
+      <div class="medium-6 columns">
+        <label for="par_qos_min_bw">
+          {{tr "QoS Min Bandwidth in kB/s"}}
+          <span class="tip">
+            {{tr "If bandwidth falls below this minimum goal, then bandwidth will not be throttled (reduced) for the virtual volumes associated with the policy. If a minimum goal is set for bandwidth, then a maximum limit must also be set for bandwidth. The minimum goal will be ignored if the system does not have policies with a latency goal set. The bandwidth minimum goal must be between 0 and 9 007 199 254 740 991 KB/s"}}
+          </span>
+        </label>
+        <input type="text" name="par_qos_min_bw" id="par_qos_min_bw" />
+      </div>
+      <div class="medium-6 columns">
+        <label for="par_qos_priority">
+          {{tr "QoS Priority"}}
+          <span class="tip">
+            {{tr "Determines the sequence for throttling policies to meet latency goals. High priority should be used for critical applications, lower priority should be used for less critical applications. The priority will be ignored if the system does not have policies with a latency goal and minimum goal."}}
+          </span>
+        </label>
+        <select id="par_qos_priority" name="par_qos_priority">
+          <option value="NORMAL">{{tr "Normal"}}</option>
+          <option value="LOW">{{tr "High"}}</option>
+          <option value="HIGH">{{tr "Low"}}</option>
+        </select>
+      </div>
+      <div class="medium-6 columns">
+        <label for="par_qos_latency">
+          {{tr "QoS Latency in ms"}}
+          <span class="tip">
+            {{tr "Service time that the system will attempt to achieve for the virtual volumes associated with the policy. A latency goal requires the system to have other policies with a minimum goal specified so that the latency goal algorithm knows which policies to throttle. The sequence in which these will be throttled is set by priority (low priority is throttled first). The latency goal must be between 0,50 and 10 000,00 ms."}}
+          </span>
+        </label>
+        <input type="text" name="par_qos_latency" id="par_qos_latency" />
+      </div>
+    </div>
+    
     <div class="medium-6 columns">
       <label for="iscsi_host">
         {{tr "iSCSI host"}}
