@@ -694,6 +694,7 @@ static void monitor_action(istringstream& is,
 
     NebulaLog::log("ImM", Log::DEBUG, oss);
 
+    //Process VM disk information
     vector<VectorAttribute *> vm_disk_info;
     vector<VectorAttribute *>::iterator it;
 
