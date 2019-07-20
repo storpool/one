@@ -404,12 +404,12 @@ class ExecDriver < VirtualMachineDriver
             {
                 :driver       => :vnm,
                 :action       => :post,
-                :parameters   => [:deploy_id],
+                :parameters   => [:deploy_info],
                 :fail_actions => [
                     {
                         :driver     => :vmm,
                         :action     => :cancel,
-                        :parameters => [:deploy_id, :host]
+                        :parameters => [:deploy_info, :host]
                     }
                 ]
             }
