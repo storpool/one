@@ -816,14 +816,15 @@ class ExecDriver < VirtualMachineDriver
                     :parameters => [:deploy_id, :host],
                     :no_fail    => true
                 }
-            steps <<
-                {
-                    :driver     => :vnm,
-                    :action     => :clean,
-                    :parameters => [:host],
-                    :no_fail    => true
-                }
         end
+
+        steps <<
+            {
+                :driver  => :vnm,
+                :action  => :clean,
+                :parameters => [:host],
+                :no_fail => true
+            }
 
         # Cancel the VM at the previous host (in case of migration)
         if mhost && !mhost.empty?
