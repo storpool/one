@@ -285,6 +285,10 @@ define(function(require) {
     var par_qos_min_bw = $('#par_qos_min_bw', dialog).val();
     var par_qos_latency = $('#par_qos_latency', dialog).val();
 
+    // system ds does not support disk type block
+    if (ds_type == "SYSTEM_DS" && type == "block")
+        type = "file"
+
     var ds_obj = {
       "datastore" : {
         "name" : name,
