@@ -77,6 +77,16 @@ WRITE_IOPS_SEC=${WRITE_IOPS_SEC:-${DEFAULT_ATTACH_WRITE_IOPS_SEC}}
 WRITE_IOPS_SEC_MAX_LENGTH=${WRITE_IOPS_SEC_MAX_LENGTH:-${DEFAULT_ATTACH_WRITE_IOPS_SEC_MAX_LENGTH}}
 WRITE_IOPS_SEC_MAX=${WRITE_IOPS_SEC_MAX:-${DEFAULT_ATTACH_WRITE_IOPS_SEC_MAX}}
 
+# BEGIN 3PAR patch
+if [ "$DEVICE" = "disk" ] && [ "$TYPE_XML" = "file" ] && [ "$TYPE_SOURCE" = "file" ]; then
+    sDev="$(readlink -f "$SOURCE")"
+    if [ "${sDev:0:11}" = "/dev/mapper" ]; then
+        TYPE_XML=block
+        TYPE_SOURCE=dev
+    fi
+fi
+# END 3PAR patch
+
 # disk XML
 XML=''
 
