@@ -113,7 +113,7 @@ begin
 
         File.new(ipam_state_f, 'w')
 
-        puts <<~EOF
+        puts <<-EOF
             ADDRESS = [
                 IP   = "#{ip_start}",
                 SIZE = "#{ar_size}"

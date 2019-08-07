@@ -112,7 +112,7 @@ ip.quantity   = data.xpath('//AR/SIZE').text.to_i
 begin
     packet.create_ip(ip)
 
-    puts <<~EOF
+    puts <<-EOF
         AR = [
             TYPE         = "IP4",
             IP           = "#{ip.network}",
