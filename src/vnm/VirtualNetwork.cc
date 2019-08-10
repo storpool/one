@@ -139,6 +139,7 @@ LIST OF MANDATORY ARGUMENTS FOR NETWORK DEFINITION
 | vxlan          | yes     | no     | yes or AUTOMATIC         |                |
 | ovswitch       | no      | no     | yes or AUTOMATIC         |                |
 | ovswitch_vxlan | yes     | no     | OUTER or AUTOMATIC_OUTER |                |
+| 802.1Q_dynamic | yes     | no     | yes or AUTOMATIC         |                |
 +----------------+---------+--------+--------------------------+----------------+
 */
 int VirtualNetwork::parse_phydev_vlans(const Template* tmpl, const string& vn_mad, const string& phydev,
@@ -158,6 +159,7 @@ int VirtualNetwork::parse_phydev_vlans(const Template* tmpl, const string& vn_ma
 
         case VirtualNetwork::VXLAN:
         case VirtualNetwork::VLAN:
+        case VirtualNetwork::VLAN_DYNAMIC:
             check_phydev = true;
             check_vlan   = true;
             break;

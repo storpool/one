@@ -159,6 +159,7 @@ define(function(require) {
         $("input#bridge", context).removeAttr("required");
         break;
       case "802.1Q":
+      case "802.1Q_dynamic":
         $("div.mode_param.8021Q", context).show();
         $("div.mode_param.8021Q [wizard_field]", context).prop("wizard_field_disabled", false);
 
@@ -287,6 +288,7 @@ define(function(require) {
       $("#network_mode option[value=\"vxlan\"]", context).hide();
       $("#network_mode option[value=\"ovswitch\"]", context).hide();
       $("#network_mode option[value=\"ovswitch_vxlan\"]", context).hide();
+      $("#network_mode option[value=\"802.1Q_dynamic\"]", context).hide();
     }
     return false;
   }

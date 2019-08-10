@@ -19,21 +19,18 @@
 $: << File.dirname(__FILE__)
 $: << File.join(File.dirname(__FILE__), "..")
 
+require 'vnmmad'
 require 'vlan_tag_driver'
 
 template64   = ARGV[0]
-host         = ARGV[1]
-deploy_id    = nil
+deploy_id    = ARGV[1]
 xpath_filter = VLANTagDriver::XPATH_FILTER
 
 begin
-    hm = VLANTagDriver.from_base64(template64, xpath_filter, deploy_id, host)
-    hm.deactivate
-
     filter_driver = VNMMAD::VNMDriver.filter_driver(template64,
                                                     xpath_filter,
                                                     deploy_id)
-    filter_driver.deactivate
+    filter_driver.activate(true)
 rescue Exception => e
     OpenNebula.log_error(e.message)
     OpenNebula.log_error(e.backtrace)

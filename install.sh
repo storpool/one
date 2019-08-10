@@ -281,7 +281,7 @@ VAR_DIRS="$VAR_LOCATION/remotes \
           $VAR_LOCATION/remotes/vmm/kvm \
           $VAR_LOCATION/remotes/vmm/vcenter \
           $VAR_LOCATION/remotes/vmm/ec2 \
-          $VAR_LOCATION/remotes/vmm/az \
+          $VAR_LOCATION/remotes/vmm/az \2
           $VAR_LOCATION/remotes/vmm/one \
           $VAR_LOCATION/remotes/vmm/lxd \
           $VAR_LOCATION/remotes/vmm/packet \
@@ -295,6 +295,7 @@ VAR_DIRS="$VAR_LOCATION/remotes \
           $VAR_LOCATION/remotes/vnm/ovswitch \
           $VAR_LOCATION/remotes/vnm/ovswitch_vxlan \
           $VAR_LOCATION/remotes/vnm/vcenter \
+          $VAR_LOCATION/remotes/vnm/802.1Q_dynamic \
           $VAR_LOCATION/remotes/tm/ \
           $VAR_LOCATION/remotes/tm/dummy \
           $VAR_LOCATION/remotes/tm/shared \
@@ -479,6 +480,7 @@ INSTALL_FILES=(
     NETWORK_OVSWITCH_FILES:$VAR_LOCATION/remotes/vnm/ovswitch
     NETWORK_OVSWITCH_VXLAN_FILES:$VAR_LOCATION/remotes/vnm/ovswitch_vxlan
     NETWORK_VCENTER_FILES:$VAR_LOCATION/remotes/vnm/vcenter
+    NETWORK_8021Q_DYNAMIC_FILES:$VAR_LOCATION/remotes/vnm/802.1Q_dynamic
     EXAMPLE_SHARE_FILES:$SHARE_LOCATION/examples
     WEBSOCKIFY_SHARE_RUN_FILES:$SHARE_LOCATION/websockify
     WEBSOCKIFY_SHARE_MODULE_FILES:$SHARE_LOCATION/websockify/websockify
@@ -1115,6 +1117,15 @@ NETWORK_OVSWITCH_VXLAN_FILES="src/vnm_mad/remotes/ovswitch_vxlan/clean \
 NETWORK_VCENTER_FILES="src/vnm_mad/remotes/vcenter/pre \
                        src/vnm_mad/remotes/vcenter/post \
                        src/vnm_mad/remotes/vcenter/clean"
+
+NETWORK_8021Q_DYNAMIC_FILES="src/vnm_mad/remotes/802.1Q_dynamic/clean \
+                    src/vnm_mad/remotes/802.1Q_dynamic/post \
+                    src/vnm_mad/remotes/802.1Q_dynamic/pre \
+                    src/vnm_mad/remotes/802.1Q_dynamic/update_sg \
+                    src/vnm_mad/remotes/802.1Q_dynamic/vlan_tag_driver.rb \
+                    src/vnm_mad/remotes/802.1Q_dynamic/config.sample.py \
+                    src/vnm_mad/remotes/802.1Q_dynamic/functions.py \
+                    src/vnm_mad/remotes/802.1Q_dynamic/one-arista.py"
 
 #-------------------------------------------------------------------------------
 # Virtual Network Manager drivers configuration to be installed under $REMOTES_LOCATION/etc/vnm

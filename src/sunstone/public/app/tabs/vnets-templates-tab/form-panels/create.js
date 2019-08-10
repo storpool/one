@@ -161,6 +161,7 @@ define(function(require) {
         $("input#bridge", context).removeAttr("required");
         break;
       case "802.1Q":
+      case "802.1Q_dynamic":
         $("div.mode_param.8021Q", context).show();
         $("div.mode_param.8021Q [wizard_field]", context).prop("wizard_field_disabled", false);
 

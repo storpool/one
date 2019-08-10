@@ -61,7 +61,8 @@ public:
         VXLAN          = 6,
         VCENTER        = 7,
         OVSWITCH_VXLAN = 8,
-        BRIDGE         = 9
+        BRIDGE         = 9,
+        VLAN_DYNAMIC    = 10,
     };
 
     enum BridgeType {
@@ -87,6 +88,7 @@ public:
             case VCENTER:        return "vcenter";
             case OVSWITCH_VXLAN: return "ovswitch_vxlan";
             case BRIDGE:         return "bridge";
+            case VLAN_DYNAMIC:    return "802.1Q_dynamic";
         }
     };
 
@@ -127,6 +129,10 @@ public:
         else if ( ob == "bridge" )
         {
             return BRIDGE;
+        }
+        else if ( ob == "802.1Q_dynamic" )
+        {
+            return VLAN_DYNAMIC;
         }
         else
         {

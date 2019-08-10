@@ -95,6 +95,7 @@
             <option value="fw">{{tr "Bridged & Security Groups"}}</option>
             <option value="ebtables">{{tr "Bridged & ebtables VLAN"}}</option>
             <option value="802.1Q">{{tr "802.1Q"}}</option>
+            <option value="802.1Q_dynamic">{{tr "802.1Q Dynamic (Arista)"}}</option>
             <option value="vxlan">{{tr "VXLAN"}}</option>
             <option value="ovswitch">{{tr "Open vSwitch"}}</option>
             <option value="ovswitch_vxlan">{{tr "Open vSwitch - VXLAN"}}</option>
@@ -120,6 +121,9 @@
           </div>
           <div class="network_mode_description" value="802.1Q">
             {{tr "802.1Q, restrict network access through VLAN tagging. Security Group rules are applied."}}
+          </div>
+          <div class="network_mode_description" value="802.1Q_dynamic">
+            {{tr "802.1Q Dynamic (Arista), restrict network access through dynamic VLAN tagging using Arista switches. Security Group rules are applied."}}
           </div>
           <div class="network_mode_description" value="vxlan">
             {{tr "VXLAN, creates a L2 network overlay, each VLAN has associated a multicast address in the 239.0.0.0/8 range. Security Group rules are applied."}}
