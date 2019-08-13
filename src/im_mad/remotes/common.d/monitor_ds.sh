@@ -48,6 +48,8 @@ for DS in $(ls $DATASTORE_LOCATION); do
     TOTAL_MB=${TOTAL_MB:-"0"}
     FREE_MB=${FREE_MB:-"0"}
 
+    [ -f ../../datastore/storpool/monitor_ds.sh ] && source ../../datastore/storpool/monitor_ds.sh
+
     echo "DS = ["
     echo "  ID = $DS,"
     echo "  USED_MB = $USED_MB,"
