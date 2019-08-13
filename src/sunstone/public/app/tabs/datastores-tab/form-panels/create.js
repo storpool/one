@@ -204,6 +204,11 @@ define(function(require) {
           _selectISCSI(dialog);
           break;
         
+        case "storpool":
+          $('input#file_ds_type', dialog).attr('disabled', 'disabled');
+          _selectStorPool(dialog);
+          break;
+        
         case 'custom':
           _selectCustom(dialog);
           break;
@@ -259,6 +264,10 @@ define(function(require) {
     var iscsi_usage     = $('#iscsi_usage', dialog).val();
     var vcenter_cluster = $('#vcenter_cluster', dialog).val();
     var compatible_sys_ds = $('#compatible_sys_ds', dialog).val();
+    var sp_api_http_host = $('#sp_api_http_host', dialog).val();
+    var sp_api_http_port = $('#sp_api_http_port', dialog).val();
+    var sp_auth_token   = $('#sp_auth_token', dialog).val();
+    var sp_system       = $('#sp_system', dialog).val();
 
     var ds_obj = {
       "datastore" : {
@@ -347,6 +356,22 @@ define(function(require) {
     if (compatible_sys_ds)
         ds_obj.datastore.compatible_sys_ds = compatible_sys_ds;
 
+    if (sp_api_http_host)
+        ds_obj.datastore.sp_api_http_host = sp_api_http_host;
+
+    if (sp_api_http_port)
+        ds_obj.datastore.sp_api_http_port = sp_api_http_port;
+
+    if (sp_auth_token)
+        ds_obj.datastore.sp_auth_token = sp_auth_token;
+
+    if (ds_type == "SYSTEM_DS") {
+        if (sp_system)
+            ds_obj.datastore.sp_system = sp_system;
+        if (tm_mad == "storpool")
+            ds_obj.datastore.disk_type = "file";
+    }
+
     Sunstone.runAction("Datastore.create", ds_obj);
     return false;
   }
@@ -401,6 +426,11 @@ define(function(require) {
 
     $(".disk_type_wrapper", dialog).hide();
 
+    $('label[for="sp_api_http_host"],input#sp_api_http_host', dialog).parent().hide();
+    $('label[for="sp_api_http_port"],input#sp_api_http_port', dialog).parent().hide();
+    $('label[for="sp_auth_token"],input#sp_auth_token', dialog).parent().hide();
+    $('label[for="sp_system"],input#sp_system', dialog).parent().hide();
+
     _resetAll(dialog);
   }
 
@@ -429,6 +459,11 @@ define(function(require) {
     $('input[name="ds_tab_custom_tm_mad"]', dialog).parent().show();
 
     $(".disk_type_wrapper", dialog).show();
+
+    $('label[for="sp_api_http_host"],input#sp_api_http_host', dialog).parent().show();
+    $('label[for="sp_api_http_port"],input#sp_api_http_port', dialog).parent().show();
+    $('label[for="sp_auth_token"],input#sp_auth_token', dialog).parent().show();
+    $('label[for="sp_system"],input#sp_system', dialog).parent().show();
 
     _resetAll(dialog);
   }
@@ -521,6 +556,28 @@ define(function(require) {
     $('input#limit_mb', dialog).attr('disabled', 'disabled');
     $('input#restricted_dirs', dialog).attr('disabled', 'disabled');
     $('label[for="vcenter_cluster"],div#vcenter_cluster_wrapper', dialog).parent().fadeIn();
+  }
+
+  function _selectStorPool(dialog) {
+    $('select#ds_mad', dialog).val('storpool');
+    $('select#ds_mad', dialog).attr('disabled', 'disabled');
+    $('select#tm_mad', dialog).val('storpool');
+    $('select#tm_mad', dialog).attr('disabled', 'disabled');
+    $('input#image_ds_type', dialog).attr('checked', 'true');
+    $('input#file_ds_type', dialog).attr('disabled', 'disabled');
+    $('label[for="bridge_list"],input#bridge_list', dialog).parent().fadeIn();
+    $('label[for="sp_api_http_host"],input#sp_api_http_host', dialog).parent().fadeIn();
+    $('label[for="sp_api_http_port"],input#sp_api_http_port', dialog).parent().fadeIn();
+    $('label[for="sp_auth_token"],input#sp_auth_token', dialog).parent().fadeIn();
+    $('label[for="sp_system"],input#sp_system', dialog).parent().fadeIn();
+    $('label[for="limit_transfer_bw"],input#limit_transfer_bw', dialog).parent().fadeIn();
+    $('label[for="datastore_capacity_check"],input#datastore_capacity_check', dialog).parent().fadeIn();
+    $('select#disk_type', dialog).val('block');
+    $('select#disk_type', dialog).attr('disabled', 'disabled');
+    $('input#safe_dirs', dialog).removeAttr('disabled');
+    $('input#base_path', dialog).removeAttr('disabled');
+    $('input#limit_mb', dialog).removeAttr('disabled');
+    $('input#restricted_dirs', dialog).removeAttr('disabled');
   }
 
   function _selectCustom(dialog) {
