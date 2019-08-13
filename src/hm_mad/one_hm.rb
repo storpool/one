@@ -45,12 +45,24 @@ class HookManagerDriver < OpenNebulaDriver
 
     def action_execute(number, hook_name, host, script, *arguments)
         cmd=nil
-        cmd_string="#{script} #{arguments.join(' ')}"
+        if arguments[0][0]=="-i"
+            cmd_string="#{script}"
+        else
+            cmd_string="#{script} #{arguments.join(' ')}"
+        end
 
         if host.upcase=="LOCAL"
-            cmd=LocalCommand.run(cmd_string, log_method(number))
+            if arguments[0][0]=="-i"
+                cmd=LocalCommand.run(cmd_string, log_method(number), arguments[0][1])
+            else
+                cmd=LocalCommand.run(cmd_string, log_method(number))
+            end
         else
-            cmd=SSHCommand.run("'#{cmd_string}'", host, log_method(number))
+            if arguments[0][0]=="-i"
+                cmd=SSHCommand.run("'#{cmd_string}'", host, log_method(number), arguments[0][1])
+            else
+                cmd=SSHCommand.run("'#{cmd_string}'", host, log_method(number))
+            end
         end
 
         if cmd.code==0
