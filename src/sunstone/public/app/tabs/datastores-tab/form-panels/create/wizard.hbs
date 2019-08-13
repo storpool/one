@@ -33,6 +33,7 @@
         <option ds="fs" tm="fs_lvm" value="lvm">{{tr "LVM"}}</option>
         <option ds="dev" tm="dev" value="raw">{{tr "Raw Device Mapping"}}</option>
         <option ds="iscsi_libvirt" tm="iscsi_libvirt" value="iscsi_libvirt">{{tr "iSCSI - Libvirt initiator "}}</option>
+        <option ds="storpool" tm="storpool" value="storpool">{{tr "StorPool"}}</option>
         <option value="custom">{{tr "Custom"}}</option>
       </select>
     </div>
@@ -53,6 +54,7 @@
             <option value="dev">{{tr "Devices"}}</option>
             <option value="iscsi_libvirt">{{tr "iSCSI/Libvirt"}}</option>
             <option value="vcenter">{{tr "vCenter"}}</option>
+            <option value="storpool">{{tr "StorPool"}}</option>
             <option value="custom">{{tr "Custom"}}</option>
           </select>
           <div>
@@ -71,6 +73,7 @@
             <option value="dev">{{tr "Devices"}}</option>
             <option value="iscsi_libvirt">{{tr "iSCSI/Libvirt"}}</option>
             <option value="vcenter">{{tr "vCenter"}}</option>
+            <option value="storpool">{{tr "StorPool"}}</option>
             <option value="custom">{{tr "Custom"}}</option>
           </select>
           <div>
@@ -282,6 +285,42 @@
         </span>
       </label>
       <input type="text" name="ceph_key" id="ceph_key" />
+    </div>
+    <div class="medium-6 columns">
+      <label for="sp_api_http_host">
+        {{tr "StorPool API  host"}}
+        <span class="tip">
+          {{tr "Used when multiple clusters are managed by one frontend. Set to the IP of the desired cluster API interface"}}
+        </span>
+      </label>
+      <input type="text" name="sp_api_http_host" id="sp_api_http_host" />
+    </div>
+    <div class="medium-6 columns">
+      <label for="sp_api_http_port">
+        {{tr "StorPool API port"}}
+        <span class="tip">
+          {{tr "Used when multiple clusters are managed by one frontend. Set to the port where the desired cluster API interface is listening"}}
+        </span>
+      </label>
+      <input type="text" name="sp_api_http_port" id="sp_api_http_port" />
+    </div>
+    <div class="medium-6 columns">
+      <label for="sp_auth_token">
+        {{tr "StorPool API auth token"}}
+        <span class="tip">
+          {{tr "Used when multiple clusters are managed by one frontend. Set to the API token  for the desired cluster API"}}
+        </span>
+      </label>
+      <input type="text" name="sp_auth_token" id="sp_auth_token" />
+    </div>
+    <div class="medium-6 columns">
+      <label for="sp_system">
+        {{tr "StorPool system"}}
+        <span class="tip">
+          {{tr "Used when SYSTEM datastore type is selected. Set to 'shared' if the datastore is on a shared filesystem"}}
+        </span>
+      </label>
+      <input type="text" name="sp_system" id="sp_system" />
     </div>
     {{/advancedSection}}
   </div>
