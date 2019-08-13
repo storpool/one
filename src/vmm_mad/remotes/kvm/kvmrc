@@ -41,6 +41,9 @@ export SHUTDOWN_TIMEOUT=300
 # Uncomment this line to set options for the virsh migrate command
 #MIGRATE_OPTIONS=--unsafe
 
+# Hint how to enable postcopy after precopy
+#MIGRATE_OPTIONS="--postcopy --postcopy-after-precopy --timeout-postcopy"
+
 # IDE and SCSI disks always have the ability to issue "discard"
 # (aka TRIM or UNMAP) commands. However, by default "discard" commands are
 # silently ignored as they can cause performance degradation and fragmentation.
