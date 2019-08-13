@@ -311,6 +311,7 @@ VAR_DIRS="$VAR_LOCATION/remotes \
           $VAR_LOCATION/remotes/hooks/vcenter \
           $VAR_LOCATION/remotes/hooks/raft \
           $VAR_LOCATION/remotes/hooks/alias_ip \
+          $VAR_LOCATION/remotes/hooks/vnet \
           $VAR_LOCATION/remotes/datastore \
           $VAR_LOCATION/remotes/datastore/dummy \
           $VAR_LOCATION/remotes/datastore/fs \
@@ -495,6 +496,7 @@ INSTALL_FILES=(
     HOOK_VCENTER_FILES:$VAR_LOCATION/remotes/hooks/vcenter
     HOOK_RAFT_FILES:$VAR_LOCATION/remotes/hooks/raft
     HOOK_ALIAS_IP_FILES:$VAR_LOCATION/remotes/hooks/alias_ip
+    HOOK_VNET_FILES:$VAR_LOCATION/remotes/hooks/vnet
     COMMON_CLOUD_LIB_FILES:$LIB_LOCATION/ruby/cloud
     CLOUD_AUTH_LIB_FILES:$LIB_LOCATION/ruby/cloud/CloudAuth
     ECO_LIB_FILES:$LIB_LOCATION/ruby/cloud/econe
@@ -1605,6 +1607,12 @@ HOOK_RAFT_FILES="share/hooks/raft/vip.sh"
 #-------------------------------------------------------------------------------
 
 HOOK_ALIAS_IP_FILES="share/hooks/alias_ip/alias_ip.rb"
+
+#-------------------------------------------------------------------------------
+# HOOK VNET scripts, to be installed under $VAR_LOCATION/remotes/hooks/vnet
+#-------------------------------------------------------------------------------
+
+HOOK_VNET_FILES="share/hooks/vnet/net_fw_hook.py"
 
 #-------------------------------------------------------------------------------
 # Installation scripts, to be installed under $SHARE_LOCATION
