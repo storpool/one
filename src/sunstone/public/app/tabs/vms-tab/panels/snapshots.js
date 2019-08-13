@@ -131,6 +131,10 @@ define(function(require) {
             if (Config.isTabActionEnabled("vms-tab", "VM.snapshot_delete")) {
               actions += '<a href="VM.snapshot_delete" class="snapshot_delete" ><i class="fas fa-times"/>' + Locale.tr("Delete") + '</a>'
             }
+          } else if (that.element.STATE == OpenNebulaVM.STATES.POWEROFF && that.element.HISTORY_RECORDS.HISTORY[that.element.HISTORY_RECORDS.HISTORY.length - 1].TM_MAD == "storpool"){
+            if (Config.isTabActionEnabled("vms-tab", "VM.snapshot_delete")) {
+              actions += '<a href="VM.snapshot_delete" class="snapshot_delete" ><i class="fas fa-times"/>' + Locale.tr("Delete") + '</a>'
+            }
           }
         }
 
