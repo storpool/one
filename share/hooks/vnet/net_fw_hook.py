@@ -54,7 +54,7 @@ def parse_alias_nic_data(vm_root):
     if a_entry is None:
         raise KeyError(xpath)
     alias_data = {}
-    for e in ['ALIAS_ID', 'PARENT_ID', 'IP', 'NAME']:
+    for e in ['ALIAS_ID', 'PARENT_ID', 'IP', 'NAME', 'IP6']:
         try:
             if e[-3:] == '_ID':
                 alias_data[e] = int(a_entry.find('./{e}'.format(e=e)).text)
@@ -106,11 +106,13 @@ def toggle_ipset_filter(vm):
     Returns:
     '''
 
-    chain = "{n}-ip-spoofing".format(n=vm['nicdev'])
-    cmd = ['sudo', 'ipset', '-exist', vm['action'], chain, vm['a']['IP']]
-    msg = ' '.join(cmd)
-    syslog.syslog(syslog.LOG_INFO, msg)
-    subprocess.call(cmd)
+    for addr in ['IP', 'IP6']:
+        if addr in vm['a']:
+            chain = "{n}-{a}-spoofing".format(n=vm['nicdev'],a=addr.lower())
+            cmd = ['sudo', 'ipset', '-exist', vm['action'], chain, vm['a'][addr]]
+            msg = ' '.join(cmd)
+            syslog.syslog(syslog.LOG_INFO, msg)
+            subprocess.call(cmd)
 
 def toggle_libvirt_filter(vm):
     ''' add/del filterref parameter with the  ALIAS IP
