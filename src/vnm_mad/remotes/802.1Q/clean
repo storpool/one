@@ -27,7 +27,7 @@ deploy_id    = nil
 xpath_filter = VLANTagDriver::XPATH_FILTER
 
 begin
-    hm = VLANTagDriver.from_base64(template64, xpath_filter, deploy_id, host)
+    hm = VLANTagDriver.from_base64(template64, xpath_filter, deploy_id)
     hm.deactivate
 
     filter_driver = VNMMAD::VNMDriver.filter_driver(template64,
