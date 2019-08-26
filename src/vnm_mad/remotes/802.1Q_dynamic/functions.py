@@ -25,7 +25,7 @@ def parsevlans(vlans):
 def createvlan(vlans, vlan):
     existingvlan = vlans.get(vlan)
     if not existingvlan:
-        print 'Vlan %s does not exists, so adding it' % vlan
+        print ('Vlan %s does not exists, so adding it' % vlan)
         return vlans.create(vlan)
 
     return False
@@ -40,16 +40,16 @@ def deletevlan(vlans, switchports, vlan):
             if vlan in allowedvlans:
                 return False
 
-        print 'Vlan %s exists and it is not used, so removing it' % vlan
+        print ('Vlan %s exists and it is not used, so removing it' % vlan)
         return vlans.delete(vlan)
 
     return False
 
 def manageswitch(switchconfig, switchport, vlan, action):
     if not isinstance(vlan, int) or vlan == 0:
-        print 'ERROR: Invalid vlan id %s' % vlan
+        print ('ERROR: Invalid vlan id %s' % vlan)
 
-    print 'Connecting to %s' % (switchconfig['host'])
+    print ('Connecting to %s' % switchconfig['host'])
     node = pyeapi.connect(host=switchconfig['host'], transport=switchconfig['transport'],
                           username=switchconfig['username'],
                           password=switchconfig['password'], return_node=True)
@@ -63,11 +63,11 @@ def manageswitch(switchconfig, switchport, vlan, action):
 
     if action == 'clean':
         if vlan in allowedvlans:
-            print 'Removing VLAN %s from switchport %s' % (vlan, switchport)
+            print ('Removing VLAN %s from switchport %s' % (vlan, switchport))
             node.config(['interface %s' % switchport, 'switchport trunk allowed vlan remove %s' % vlan])
             configchanged = True
         else:
-            print 'VLAN %s is already removed from port %s' % (vlan, switchport)
+            print ('VLAN %s is already removed from port %s' % (vlan, switchport))
 
         if deletevlan(vlans, switchports, vlan):
             configchanged = True
@@ -76,12 +76,12 @@ def manageswitch(switchconfig, switchport, vlan, action):
             configchanged = True
 
         if vlan not in allowedvlans:
-            print 'Allowing VLAN %s on switchport %s' % (vlan, switchport)
+            print ('Allowing VLAN %s on switchport %s' % (vlan, switchport))
             node.config(['interface %s' % switchport, 'switchport trunk allowed vlan add %s' % vlan])
             configchanged = True
         else:
-            print 'VLAN %s is already allowed on port %s' % (vlan, switchport)
+            print ('VLAN %s is already allowed on port %s' % (vlan, switchport))
 
     if configchanged:
-        print 'Switch config changed, saving configuration'
+        print ('Switch config changed, saving configuration')
         node.config('write')
