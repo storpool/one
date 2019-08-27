@@ -423,6 +423,18 @@ module SGIPTables
 
         # IP-spofing
         if nic[:filter_ip_spoofing] == "YES"
+            #bootp
+            commands.add :iptables, "-A #{chain_out} -p udp "\
+                "--source 0.0.0.0/32 --sport 68 --destination "\
+                "255.255.255.255/32 --dport 67 -j RETURN"
+
+            set = "#{vars[:chain]}-ip-spoofing"
+
+            commands.add :ipset, "create #{set} hash:ip family inet"
+
+            commands.add :iptables, "-A #{chain_out} -m set ! "\
+                "--match-set #{set} src -j DROP"
+
             ipv4s = Array.new
 
             [:ip, :vrouter_ip].each do |key|
@@ -438,25 +450,17 @@ module SGIPTables
             end
 
             if !ipv4s.empty?
-                #bootp
-                commands.add :iptables, "-A #{chain_out} -p udp "\
-                    "--source 0.0.0.0/32 --sport 68 --destination "\
-                    "255.255.255.255/32 --dport 67 -j RETURN"
-
-                set = "#{vars[:chain]}-ip-spoofing"
-
-                commands.add :ipset, "create #{set} hash:ip family inet"
-
                 ipv4s.each do |ip|
                     commands.add :ipset, "add -exist #{set} #{ip}"
                 end
-
-                commands.add :iptables, "-A #{chain_out} -m set ! "\
-                    "--match-set #{set} src -j DROP"
-            else # If there are no IPv4 addresses allowed, block all
-                commands.add :iptables, "-A #{chain_out} --source 0.0.0.0/0 "\
-                    "-j DROP"
             end
+
+            set = "#{vars[:chain]}-ip6-spoofing"
+
+            commands.add :ipset, "create #{set} hash:ip family inet6"
+
+            commands.add :ip6tables, "-A #{chain_out} -m set ! "\
+                "--match-set #{set} src -j DROP"
 
             ipv6s = Array.new
 
@@ -473,18 +477,9 @@ module SGIPTables
             end
 
             if !ipv6s.empty?
-                set = "#{vars[:chain]}-ip6-spoofing"
-
-                commands.add :ipset, "create #{set} hash:ip family inet6"
-
                 ipv6s.each do |ip|
                     commands.add :ipset, "add -exist #{set} #{ip}"
                 end
-
-                commands.add :ip6tables, "-A #{chain_out} -m set ! "\
-                    "--match-set #{set} src -j DROP"
-            else # If there are no IPv6 addresses allowed, block all
-                commands.add :ip6tables, "-A #{chain_out} --source ::/0 -j DROP"
             end
         end
 
