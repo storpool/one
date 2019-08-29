@@ -22,9 +22,9 @@ module VNMNetwork
     # to local installations. Any modification requires to sync the hosts with
     # onehost sync command.
     COMMANDS = {
-      :ebtables => "sudo ebtables",
-      :iptables => "sudo iptables",
-      :ip6tables=> "sudo ip6tables",
+      :ebtables => "sudo ebtables --concurrent",
+      :iptables => "sudo iptables -w 3 -W 20000",
+      :ip6tables=> "sudo ip6tables -w 3 -W 20000",
       :ip       => "sudo ip",
       :virsh    => "virsh -c qemu:///system",
       :ovs_vsctl=> "sudo ovs-vsctl",
