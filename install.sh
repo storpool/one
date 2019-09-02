@@ -1074,6 +1074,7 @@ IM_PROBES_KVM_PROBES_FILES="src/im_mad/remotes/kvm-probes.d/kvm.rb \
                      src/im_mad/remotes/kvm-probes.d/name.sh \
                      src/im_mad/remotes/kvm-probes.d/pci.rb \
                      src/im_mad/remotes/kvm-probes.d/numa.rb \
+                     src/im_mad/remotes/kvm-probes.d/nicstats.sh \
                      src/im_mad/remotes/common.d/monitor_ds.sh \
                      src/im_mad/remotes/common.d/version.sh \
                      src/im_mad/remotes/common.d/collectd-client-shepherd.sh"
