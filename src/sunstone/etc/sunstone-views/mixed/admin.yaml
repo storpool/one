@@ -36,7 +36,7 @@ enabled_tabs:
     - vdcs-tab
     - acls-tab
     - settings-tab
-    - support-tab
+    #- support-tab
     - upgrade-top-tab
     - vmgroup-tab
 features:
