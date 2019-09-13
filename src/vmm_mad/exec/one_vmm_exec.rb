@@ -604,7 +604,7 @@ class ExecDriver < VirtualMachineDriver
     # RESET action, resets a running VM
     #
     def reset(id, drv_message)
-        restart(id, drv_message, :reboot)
+        restart(id, drv_message, :reset)
     end
 
     #
