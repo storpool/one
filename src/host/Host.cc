@@ -743,6 +743,8 @@ int Host::post_update_template(string& error)
     string new_vm_mad;
     string cpu_ids;
 
+    unsigned int vms_thread;
+
     map<std::string, unsigned int>::const_iterator it;
 
     for (it = MAX_HOST_VAR_SIZES.begin(); it != MAX_HOST_VAR_SIZES.end() ; ++it)
@@ -779,6 +781,18 @@ int Host::post_update_template(string& error)
     host_share.update_capacity(this);
 
     host_share.reserve_cpus(cpu_ids);
+
+    if ( get_template_attribute("VMS_THREAD", vms_thread) )
+    {
+        if ( vms_thread <= 0 )
+        {
+            vms_thread = 1;
+
+            replace_template_attribute("VMS_THREAD", 1);
+        }
+
+        host_share.set_vms_thread(vms_thread);
+    }
 
     return 0;
 };
