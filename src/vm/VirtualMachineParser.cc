@@ -522,8 +522,9 @@ void VirtualMachine::parse_well_known_attributes()
      * TOPOLOGY
      * NUMA_NODE
      */
-    std::vector<std::string> names = {"INPUT", "FEATURES", "RAW", 
-        "CLONING_TEMPLATE_ID", "TOPOLOGY", "NUMA_NODE"};
+    std::vector<std::string> names = {"INPUT", "FEATURES", "RAW",
+        "CLONING_TEMPLATE_ID", "TOPOLOGY", "NUMA_NODE", "HYPERV_OPTIONS",
+        "SPICE_OPTIONS"};
 
     for (auto it = names.begin(); it != names.end() ; ++it)
     {
@@ -988,7 +989,7 @@ int VirtualMachine::parse_topology(Template * tmpl, std::string &error)
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
-bool VirtualMachine::is_pinned()
+bool VirtualMachine::is_pinned() const
 {
     VectorAttribute * topology = obj_template->get("TOPOLOGY");
 
