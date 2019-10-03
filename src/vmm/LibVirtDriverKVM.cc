@@ -586,7 +586,6 @@ int LibVirtDriver::deployment_description_kvm(
     get_attribute(vm, host, cluster, "OS", "BOOTLOADER", bootloader);
     get_attribute(vm, host, cluster, "OS", "ROOT", root);
     get_attribute(vm, host, cluster, "OS", "KERNEL_CMD", kernel_cmd);
-    get_attribute(vm, host, cluster, "OS", "SD_DISK_BUS", sd_bus);
 
     if (arch.empty())
     {
