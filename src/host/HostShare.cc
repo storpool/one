@@ -451,7 +451,7 @@ ostream& operator<<(ostream& o, const HostShareNode& n)
                 o << " ";
             }
 
-            if ( jt->second == -1 )
+            if ( c.reserved_cpus.count(jt->first) == 1 )
             {
                 o << std::setw(2) << "r";
             }
@@ -669,23 +669,6 @@ void HostShareNode::reserve_cpus(const std::string& cpu_ids)
         if ( update_core )
         {
             c.set_cpu_usage();
-        }
-
-        struct Core &c = jt->second;
-
-        unsigned int fcpus = 0;
-
-        for (auto kt = c.cpus.begin(); kt != c.cpus.end(); ++kt)
-        {
-            if ( kt->second == -1 )
-            {
-                fcpus++;
-            }
-        }
-
-        if ( c.free_cpus == 0 && fcpus != 0) //CORE policy
-        {
-            continue;
         }
     }
 }
