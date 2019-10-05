@@ -1,5 +1,5 @@
 .sunstone-header{
-
+  display: none;
   &.support_place{
     text-align: right;
     margin: 20px 2rem -2rem 0px;
@@ -64,6 +64,7 @@
   }
 
   #li_support-tab {
+    display: none;
     margin-top: 1rem;
     a {
       border: 1px solid #dfdfdf;
