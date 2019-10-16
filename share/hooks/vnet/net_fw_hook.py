@@ -84,7 +84,7 @@ def parse_nic_data(vm_root, vm):
         raise KeyError(xpath)
     nic_data = {}
     for e in ['IP', 'VN_MAD', 'ALIAS_IDS', 'FILTER_IP_SPOOFING', 'FILTER',
-              'NIC_ID']:
+              'NIC_ID', 'FILTER_ARP_SPOOFING']:
         try:
             if e[-3:] == '_ID':
                 nic_data[e] = int(n_entry.find('./{e}'.format(e=e)).text)
@@ -96,6 +96,24 @@ def parse_nic_data(vm_root, vm):
         msg = "Can't find NIC/ALIAS_IDS".format(d=vm['domain'])
         raise KeyError(msg)
     return nic_data
+
+def toggle_ebtables_filter(vm):
+    syslog.syslog(syslog.LOG_DEBUG, 'toggle_ebtables_filter')
+    if 'IP' in vm['a']:
+        action = '-D'
+        if vm['action'] == 'add':
+            action = '-A'
+        for d in ['i','o']:
+            rule = 'src'
+            if d == 'o':
+                rule = 'dst'
+            chain = "{n}-{d}-arp4".format(n=vm['nicdev'],d=d)
+            cmd = ['sudo', 'ebtables', '-t', 'nat', action, chain,
+              '-p', 'ARP', '--arp-ip-{r}'.format(r=rule), vm['a']['IP'],
+              '-j', 'RETURN']
+            msg = ' '.join(cmd)
+            syslog.syslog(syslog.LOG_INFO, msg)
+            subprocess.call(cmd)
 
 def toggle_ipset_filter(vm):
     ''' add/del ipset rule for the given ALIAS IP
@@ -246,6 +264,13 @@ def main(vm_base):
         fltr = 'FILTER'
         if fltr in vm['n'] and vm['n'][fltr] == 'clean-traffic':
             toggle_libvirt_filter(vm)
+        else:
+            msg = "{n} has no {f}:{v}".format(n=vm['nicdev'], f=fltr, v=vm['n'])
+            syslog.syslog(syslog.LOG_DEBUG, msg)
+
+        fltr = 'FILTER_ARP_SPOOFING'
+        if fltr in vm['n'] and vm['n'][fltr] == 'YES':
+            toggle_ebtables_filter(vm)
         else:
             msg = "{n} has no {f}:{v}".format(n=vm['nicdev'], f=fltr, v=vm['n'])
             syslog.syslog(syslog.LOG_DEBUG, msg)
