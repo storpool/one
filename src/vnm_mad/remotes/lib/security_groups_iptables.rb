@@ -493,6 +493,97 @@ module SGIPTables
         commands.add :ip6tables, "-A #{chain_out} -m state"\
             " --state ESTABLISHED,RELATED -j RETURN"
 
+        # ARP-spofing
+        if nic[:filter_arp_spoofing] == "YES"
+
+            self.nic_deactivate_ebtables(chain)
+
+            commands.add :ebtables, "-t nat -N #{chain_in}-arp4 -P DROP"
+            commands.add :ebtables, "-t nat -N #{chain_out}-arp4 -P DROP"
+            ipv4s = Array.new
+            [:ip, :vrouter_ip].each do |key|
+                ipv4s << nic[key] if !nic[key].nil? && !nic[key].empty?
+            end
+            if !nic[:aliases].nil? && !nic[:aliases].empty?
+                nic[:aliases].each do |nicalias|
+                    [:ip, :vrouter_ip].each do |key|
+                        ipv4s << nicalias[key] if !nicalias[key].nil? && !nicalias[key].empty?
+                    end
+                end
+            end
+            if !ipv4s.empty?
+                ipv4s.each do |ip|
+                    commands.add :ebtables, "-t nat -A #{chain_in}-arp4 -p ARP "\
+                        "--arp-ip-src #{ip} -j RETURN"
+                    commands.add :ebtables, "-t nat -A #{chain_out}-arp4 -p ARP "\
+                        "--arp-ip-dst #{ip} -j RETURN"
+                end
+            end
+            # Chain In
+#            commands.add :ebtables, "-t nat -N #{chain_in}-ip4 -P ACCEPT"
+#            commands.add :ebtables, "-t nat -A #{chain_in}-ip4 "\
+#                "-s ! #{nic[:mac]} -j DROP"
+            commands.add :ebtables, "-t nat -N #{chain_in}-arp -P DROP"
+            commands.add :ebtables, "-t nat -A #{chain_in}-arp -p ARP "\
+                "-s ! #{nic[:mac]} -j DROP"
+            commands.add :ebtables, "-t nat -A #{chain_in}-arp -p ARP "\
+                "--arp-mac-src ! #{nic[:mac]} -j DROP"
+            commands.add :ebtables, "-t nat -A #{chain_in}-arp -p ARP "\
+                "-j #{chain_in}-arp4" 
+            commands.add :ebtables, "-t nat -A #{chain_in}-arp -p ARP "\
+                "--arp-op Request -j ACCEPT"
+            commands.add :ebtables, "-t nat -A #{chain_in}-arp -p ARP "\
+                "--arp-op Reply -j ACCEPT"
+            commands.add :ebtables, "-t nat -N #{chain_in}-rarp -P DROP"
+            commands.add :ebtables, "-t nat -A #{chain_in}-rarp -p 0x8035 "\
+                "-s #{nic[:mac]} -d Broadcast --arp-op Request_Reverse "\
+                "--arp-ip-src 0.0.0.0 --arp-ip-dst 0.0.0.0 "\
+                "--arp-mac-src #{nic[:mac]} --arp-mac-dst #{nic[:mac]} "\
+                "-j ACCEPT"
+            commands.add :ebtables, "-t nat -N #{chain_in} -P ACCEPT"
+#            commands.add :ebtables, "-t nat -A #{chain_in} -p IPv4 "\
+#                "-j #{chain_in}-ip4"
+            commands.add :ebtables, "-t nat -A #{chain_in} -p IPv4 "\
+                "-j ACCEPT"
+            commands.add :ebtables, "-t nat -A #{chain_in} -p IPv6 "\
+                "-j ACCEPT"
+            commands.add :ebtables, "-t nat -A #{chain_in} -p ARP "\
+                "-j #{chain_in}-arp"
+            commands.add :ebtables, "-t nat -A #{chain_in} -p 0x8035 "\
+                "-j #{chain_in}-rarp"
+            commands.add :ebtables, "-t nat -A PREROUTING -i #{chain} "\
+                "-j #{chain_in}"
+#            commands.add :ebtables, "-t nat -N #{chain_out}-ip4 -P ACCEPT"
+            commands.add :ebtables, "-t nat -N #{chain_out}-arp -P DROP"
+            commands.add :ebtables, "-t nat -A #{chain_out}-arp -p ARP "\
+                "--arp-op Reply --arp-mac-dst ! #{nic[:mac]} -j DROP"
+            commands.add :ebtables, "-t nat -A #{chain_out}-arp -p ARP "\
+                "-j #{chain_out}-arp4"
+            commands.add :ebtables, "-t nat -A #{chain_out}-arp -p ARP "\
+                "--arp-op Request -j ACCEPT"
+            commands.add :ebtables, "-t nat -A #{chain_out}-arp -p ARP "\
+                "--arp-op Reply -j ACCEPT"
+            commands.add :ebtables, "-t nat -N #{chain_out}-rarp -P DROP"
+            commands.add :ebtables, "-t nat -A #{chain_out}-rarp -p 0x8035 "\
+                "-d Broadcast --arp-op Request_Reverse "\
+                "--arp-ip-src 0.0.0.0 --arp-ip-dst 0.0.0.0 "\
+                "--arp-mac-src #{nic[:mac]} --arp-mac-dst #{nic[:mac]} "\
+                "-j ACCEPT"
+            commands.add :ebtables, "-t nat -N #{chain_out} -P ACCEPT"
+#            commands.add :ebtables, "-t nat -A #{chain_out} -p IPv4 "\
+#                "-j #{chain_out}-ip4"
+            commands.add :ebtables, "-t nat -A #{chain_out} -p IPv4 "\
+                "-j ACCEPT"
+            commands.add :ebtables, "-t nat -A #{chain_out} -p IPv6 "\
+                "-j ACCEPT"
+            commands.add :ebtables, "-t nat -A #{chain_out} -p ARP "\
+                "-j #{chain_out}-arp"
+            commands.add :ebtables, "-t nat -A #{chain_out} -p 0x8035 "\
+                "-j #{chain_out}-rarp"
+            commands.add :ebtables, "-t nat -A POSTROUTING -o #{chain} "\
+                "-j #{chain_out}"
+        end
+
         commands.run!
     end
 
@@ -515,12 +606,40 @@ module SGIPTables
         commands.run!
     end
 
+    def self.nic_deactivate_ebtables(chain)
+        commands = VNMNetwork::Commands.new
+
+        commands.add :ebtables, "-t nat -L --Lx"
+        ebtables_nat = commands.run!
+        if !ebtables_nat.nil?
+            ebtables = []
+            ebtables_nat.split("\n").each do |rule|
+                if rule.match(/-j #{chain}/)
+                    rule_e = rule.split
+                    if rule_e[5] == "-p"
+                        ebtables.push("-t nat -X #{rule_e[-1]}")
+                        ebtables.unshift("-t nat -D #{rule_e[4..-1].join(" ")}")
+                    else
+                        ebtables.push("-t nat -D #{rule_e[4..-1].join(" ")}")
+                        ebtables.push("-t nat -X #{rule_e[-1]}")
+                    end
+                end
+            end
+            if ebtables.any?
+                ebtables.each { |c| commands.add :ebtables, c }
+                commands.run!
+            end
+        end
+    end
+
     # Removes all the rules associated to a VM and NIC
     def self.nic_deactivate(vm, nic)
         vars      = SGIPTables.vars(vm, nic)
         chain     = vars[:chain]
         chain_in  = vars[:chain_in]
         chain_out = vars[:chain_out]
+
+        self.nic_deactivate_ebtables(chain)
 
         info = self.info
 
