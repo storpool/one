@@ -71,5 +71,5 @@ require 'opennebula/vntemplate_pool'
 module OpenNebula
 
     # OpenNebula version
-    VERSION = '5.8.5.6'
+    VERSION = '5.8.5.7'
 end
