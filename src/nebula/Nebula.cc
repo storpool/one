@@ -1293,6 +1293,7 @@ void Nebula::get_ds_location(string& dsloc)
 string Nebula::get_vm_log_filename(int oid)
 {
     ostringstream oss;
+    string use_vms_location;
 
     const VectorAttribute * log = nebula_configuration->get("LOG");
 
