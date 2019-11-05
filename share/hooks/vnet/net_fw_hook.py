@@ -54,7 +54,8 @@ def parse_alias_nic_data(vm_root):
     if a_entry is None:
         raise KeyError(xpath)
     alias_data = {}
-    for e in ['ALIAS_ID', 'PARENT_ID', 'IP', 'NAME', 'IP6']:
+    for e in ['ALIAS_ID', 'PARENT_ID', 'IP', 'NAME', 
+              'IP6', 'IP6_GLOBAL', 'IP6_LINK' ]:
         try:
             if e[-3:] == '_ID':
                 alias_data[e] = int(a_entry.find('./{e}'.format(e=e)).text)
@@ -124,13 +125,22 @@ def toggle_ipset_filter(vm):
     Returns:
     '''
 
-    for addr in ['IP', 'IP6']:
+    for addr in ['IP', 'IP6', 'IP6_GLOBAL']:
         if addr in vm['a']:
-            chain = "{n}-{a}-spoofing".format(n=vm['nicdev'],a=addr.lower())
+            chain = "{n}-{a}-spoofing".format(n=vm['nicdev'],
+                                              a=addr.split('_')[0].lower())
             cmd = ['sudo', 'ipset', '-exist', vm['action'], chain, vm['a'][addr]]
             msg = ' '.join(cmd)
             syslog.syslog(syslog.LOG_INFO, msg)
             subprocess.call(cmd)
+            if addr == 'IP6_GLOBAL' and 'IP6_LINK' in vm['a']:
+                addr = 'IP6_LINK'
+                chain = "{n}-ip6-spoofing".format(n=vm['nicdev'])
+                cmd = ['sudo', 'ipset', '-exist', vm['action'], chain, vm['a'][addr]]
+                msg = ' '.join(cmd)
+                syslog.syslog(syslog.LOG_INFO, msg)
+                subprocess.call(cmd)
+
 
 def toggle_libvirt_filter(vm):
     ''' add/del filterref parameter with the  ALIAS IP
