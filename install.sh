@@ -633,11 +633,15 @@ INSTALL_FILES=(
     NETWORK_HOOKS_CLEAN_FILES:$VAR_LOCATION/remotes/vnm/hooks/clean
     NETWORK_ETC_FILES:$VAR_LOCATION/remotes/etc/vnm
     NETWORK_8021Q_FILES:$VAR_LOCATION/remotes/vnm/802.1Q
+    NETWORK_8021Q_CLEAN_FILES:$VAR_LOCATION/remotes/vnm/802.1Q/clean.d
+    NETWORK_8021Q_POST_FILES:$VAR_LOCATION/remotes/vnm/802.1Q/post.d
     NETWORK_VXLAN_FILES:$VAR_LOCATION/remotes/vnm/vxlan
     NETWORK_DUMMY_FILES:$VAR_LOCATION/remotes/vnm/dummy
     NETWORK_BRIDGE_FILES:$VAR_LOCATION/remotes/vnm/bridge
     NETWORK_EBTABLES_FILES:$VAR_LOCATION/remotes/vnm/ebtables
     NETWORK_FW_FILES:$VAR_LOCATION/remotes/vnm/fw
+    NETWORK_FW_CLEAN_FILES:$VAR_LOCATION/remotes/vnm/fw/clean.d
+    NETWORK_FW_POST_FILES:$VAR_LOCATION/remotes/vnm/fw/post.d
     NETWORK_OVSWITCH_FILES:$VAR_LOCATION/remotes/vnm/ovswitch
     NETWORK_OVSWITCH_VXLAN_FILES:$VAR_LOCATION/remotes/vnm/ovswitch_vxlan
     NETWORK_VCENTER_FILES:$VAR_LOCATION/remotes/vnm/vcenter
@@ -1478,6 +1482,7 @@ NETWORK_FILES="src/vnm_mad/remotes/lib/vnm_driver.rb \
                src/vnm_mad/remotes/lib/no_vlan.rb \
                src/vnm_mad/remotes/lib/security_groups.rb \
                src/vnm_mad/remotes/lib/security_groups_iptables.rb \
+               src/vnm_mad/remotes/lib/vnm_filter.rb \
                src/vnm_mad/remotes/lib/nic.rb"
 
 NETWORK_HOOKS_PRE_FILES="src/vnm_mad/remotes/hooks/pre/firecracker"
@@ -1489,6 +1494,10 @@ NETWORK_8021Q_FILES="src/vnm_mad/remotes/802.1Q/clean \
                     src/vnm_mad/remotes/802.1Q/pre \
                     src/vnm_mad/remotes/802.1Q/update_sg \
                     src/vnm_mad/remotes/802.1Q/vlan_tag_driver.rb"
+
+NETWORK_8021Q_CLEAN_FILES="src/vnm_mad/remotes/802.1Q/clean.d/vnm_filter_clean"
+
+NETWORK_8021Q_POST_FILES="src/vnm_mad/remotes/802.1Q/post.d/vnm_filter_post"
 
 NETWORK_VXLAN_FILES="src/vnm_mad/remotes/vxlan/clean \
                     src/vnm_mad/remotes/vxlan/post \
@@ -1518,6 +1527,10 @@ NETWORK_FW_FILES="src/vnm_mad/remotes/fw/post \
                   src/vnm_mad/remotes/fw/pre \
                   src/vnm_mad/remotes/fw/update_sg \
                   src/vnm_mad/remotes/fw/clean"
+
+NETWORK_FW_CLEAN_FILES="src/vnm_mad/remotes/fw/clean.d/vnm_filter_clean"
+
+NETWORK_FW_POST_FILES="src/vnm_mad/remotes/fw/post.d/vnm_filter_post"
 
 NETWORK_OVSWITCH_FILES="src/vnm_mad/remotes/ovswitch/clean \
                     src/vnm_mad/remotes/ovswitch/post \
@@ -2026,7 +2039,8 @@ HOOK_RAFT_FILES="share/hooks/raft/vip.sh"
 # HOOK scripts, to be installed under $VAR_LOCATION/remotes/hooks/alias_ip
 #-------------------------------------------------------------------------------
 
-HOOK_ALIAS_IP_FILES="share/hooks/alias_ip/alias_ip.rb"
+HOOK_ALIAS_IP_FILES="share/hooks/alias_ip/alias_ip.rb \
+                     share/hooks/alias_ip/vnm_filter.rb"
 
 #-------------------------------------------------------------------------------
 # Installation scripts, to be installed under $SHARE_LOCATION
