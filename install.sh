@@ -1725,7 +1725,8 @@ HOOK_RAFT_FILES="share/hooks/raft/vip.sh"
 # HOOK scripts, to be installed under $VAR_LOCATION/remotes/hooks/alias_ip
 #-------------------------------------------------------------------------------
 
-HOOK_ALIAS_IP_FILES="share/hooks/alias_ip/alias_ip.rb"
+HOOK_ALIAS_IP_FILES="share/hooks/alias_ip/alias_ip.rb \
+                     share/hooks/alias_ip/vnm_filter.rb"
 
 #-------------------------------------------------------------------------------
 # Installation scripts, to be installed under $SHARE_LOCATION
