@@ -38,10 +38,15 @@ module Migrator
 
     def up
         feature_2944
-        bug_2687         # MUST be run before 2489, which generates short body
+        GC.start
+        bug_2687 # MUST be run before 2489, which generates short body
+        GC.start
         feature_2253
+        GC.start
         feature_2489_2671
+        GC.start
         feature_826
+        GC.start
         feature_2966
         create_idxs      #MUST be the last one
         true
