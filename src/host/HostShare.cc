@@ -199,6 +199,8 @@ void HostSharePCI::del(const vector<VectorAttribute *> &devs)
         {
             pci_it->second->vmid = -1;
             pci_it->second->attrs->replace("VMID",-1);
+
+            (*it)->remove("ADDRESS");
         }
     }
 };
