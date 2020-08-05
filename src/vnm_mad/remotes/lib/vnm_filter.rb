@@ -125,10 +125,10 @@ class VnmFilter < VNMMAD::VNMDriver
                     end
                     commands.run!
                 end
-            end
-
-            if nic[:filter_mac_spoofing] == "YES"
-                @slog.info "VM #{vm_id} NIC #{nic_id} FILTER_MAC_SPOOFING"
+#            end
+#
+#            if nic[:filter_mac_spoofing] == "YES"
+                @slog.info "VM #{vm_id} NIC #{nic_id} FILTER_IP_SPOOFING/ARP"
                 deactivate_ebtables(chain)
                 commands.add :ebtables, "-t nat -N #{chain_i}-arp4 -P DROP"
                 commands.add :ebtables, "-t nat -N #{chain_o}-arp4 -P DROP"
