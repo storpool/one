@@ -494,7 +494,7 @@ helpers do
     end
 
     def destroy_session
-        session.clear
+        session.destroy
         [204, ""]
     end
 end
@@ -615,13 +615,33 @@ get '/' do
       build_conf_locals
     end
 
-    response.set_cookie("one-user", :value=>"#{session[:user]}")
     erb :index, :locals =>  {
             :logos_conf => $conf[:locals][:logos_conf],
             :oned_conf  => $conf[:locals][:oned_conf],
             :support    => $conf[:locals][:support],
             :upgrade    => $conf[:locals][:upgrade]
     }
+end
+
+get '/ws' do
+    logger.info { 'Incomming WS connection' }
+    if request.websocket?
+        request.websocket do |ws|
+            ws.onopen do
+                logger.info { "New client registered" }
+                settings.sockets << ws
+            end
+
+            ws.onmessage do |msg|
+                logger.info { "New message received: #{msg}" }
+            end
+
+            ws.onclose do
+                logger.info { "Client disconnected." }
+                settings.sockets.delete(ws)
+            end
+        end
+    end
 end
 
 get '/login' do
