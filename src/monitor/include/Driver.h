@@ -184,7 +184,7 @@ void Driver<E>::stop_driver(int secs)
 
     char buf[]="FINALIZE\n";
 
-    ::write(to_drv, buf, strlen(buf));
+    (void) ::write(to_drv, buf, strlen(buf));
 
     close(from_drv);
     close(to_drv);
