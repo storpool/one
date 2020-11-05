@@ -16,8 +16,10 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-source $(dirname $0)/../../etc/vmm/kvm/kvmrc
-source $(dirname $0)/../../scripts_common.sh
+DRIVER_PATH=$(dirname $0)
+source "$DRIVER_PATH/../../etc/vmm/kvm/kvmrc"
+source "$DRIVER_PATH/../../scripts_common.sh"
+XPATH="$DRIVER_PATH/../../datastore/xpath.rb"
 
 get_qemu_img_version() {
     qemu-img --version | head -1 | awk '{print $3}' | \
