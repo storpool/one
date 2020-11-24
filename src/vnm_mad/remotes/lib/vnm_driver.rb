@@ -220,9 +220,9 @@ module VNMMAD
 
             _o, _e, s = Open3.capture3(cmd)
 
-            return true, text if s.exitstatus.zero?
+            return true, _o if s.exitstatus.zero?
 
-            [false, text]
+            [false, _e]
         end
 
         private
