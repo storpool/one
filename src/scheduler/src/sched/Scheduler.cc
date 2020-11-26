@@ -1614,7 +1614,7 @@ void Scheduler::dispatch()
                       << "\"]";
             }
 
-            if ( num_matched_networks < nics_ids.size())
+            if (!vm->is_resched() && num_matched_networks < nics_ids.size())
             {
                 map<int,int>::iterator it;
 
