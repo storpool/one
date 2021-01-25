@@ -189,6 +189,8 @@ void Datastore::disk_attribute(
 
     type = disk->vector_value("TYPE");
 
+    one_util::toupper(type);
+
     if (type != "CDROM")
     {
         get_template_attribute("DRIVER", st);
